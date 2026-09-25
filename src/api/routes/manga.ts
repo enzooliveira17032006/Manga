@@ -24,7 +24,7 @@ router.get('/discover', async (req: Request, res: Response) => {
 
     // Use empty query to fetch from providers, but request more items
     // because many will be dropped if they lack PT-BR chapters.
-    const poolLimit = limit * 6; 
+    const poolLimit = limit * 2; 
     const results = await syncService.searchAndSync('', { category, sort, limit: poolLimit });
     
     // We limit the results after dedup and PT-BR filters

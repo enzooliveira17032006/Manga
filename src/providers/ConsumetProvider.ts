@@ -11,7 +11,7 @@ export class ConsumetProvider implements MangaProvider {
   constructor(config: ProviderConfig) {
     this.config = config;
     this.api = axios.create({
-      baseURL: process.env.CONSUMET_URL || 'http://localhost:3000/meta/anilist-manga',
+      baseURL: process.env.CONSUMET_URL || 'https://api.consumet.org/meta/anilist-manga',
       timeout: config.rateLimit.timeout,
     });
   }
@@ -19,7 +19,7 @@ export class ConsumetProvider implements MangaProvider {
   async getProviderStatus(): Promise<ProviderStatus> {
     try {
       // Just check if the host is up
-      const baseUrl = (process.env.CONSUMET_URL || 'http://localhost:3000');
+      const baseUrl = (process.env.CONSUMET_URL || 'https://api.consumet.org');
       const res = await axios.get(baseUrl, { timeout: 2000 });
       return res.status === 200 ? 'HEALTHY' : 'DEGRADED';
     } catch (e) {

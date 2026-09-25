@@ -17,7 +17,7 @@ export function CatalogView({ title, category, icon }: CatalogViewProps) {
 
   useEffect(() => {
     setLoading(true);
-    ApiClient.discover({ category, limit: 30 })
+    ApiClient.discover({ category, limit: 12 })
       .then(data => {
         setResults(data);
         setLoading(false);
