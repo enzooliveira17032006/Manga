@@ -47,7 +47,7 @@ function DiscoverResults() {
         </div>
       ) : (
         <div className="text-center text-neutral-500 py-10">
-          Nenhum mangÃ¡ encontrado.
+          Nenhum mangá encontrado.
         </div>
       )}
     </div>
