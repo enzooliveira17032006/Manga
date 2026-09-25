@@ -27,7 +27,7 @@ export class ConsumetProvider implements MangaProvider {
     }
   }
 
-  async search(query: string): Promise<MangaMetadata[]> {
+  async search(query: string, options?: any): Promise<MangaMetadata[]> {
     try {
       const res = await this.api.get(`/${query}`, { params: { provider: this.consumetProvider }});
       return res.data.results.map((item: any) => ({

@@ -46,7 +46,7 @@ export interface MangaProvider {
   config: ProviderConfig;
   
   getProviderStatus(): Promise<ProviderStatus>;
-  search(query: string, options?: { category?: string, sort?: 'popular' | 'recent', limit?: number }): Promise<MangaMetadata[]>;
+  search(query: string, options?: { category?: string, sort?: 'popular' | 'recent', limit?: number, page?: number, genre?: string }): Promise<MangaMetadata[]>;
   getManga(id: string): Promise<MangaMetadata | null>;
   getChapters(mangaId: string, languages?: Language[]): Promise<Chapter[]>;
   getChapterPages(chapterId: string): Promise<string[]>;

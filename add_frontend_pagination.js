@@ -1,4 +1,21 @@
-'use client';
+const fs = require('fs');
+
+// ApiClient.ts
+let client = fs.readFileSync('lib/apiClient.ts', 'utf8');
+client = client.replace(
+  "static async discover(params: { category?: string, sort?: 'popular' | 'recent', limit?: number }): Promise<FrontendManga[]> {",
+  "static async discover(params: { category?: string, sort?: 'popular' | 'recent', limit?: number, page?: number, genre?: string }): Promise<FrontendManga[]> {"
+);
+client = client.replace(
+  "if (params.limit) url.searchParams.append('limit', params.limit.toString());",
+  "if (params.limit) url.searchParams.append('limit', params.limit.toString());\n    if (params.page) url.searchParams.append('page', params.page.toString());\n    if (params.genre) url.searchParams.append('genre', params.genre);"
+);
+fs.writeFileSync('lib/apiClient.ts', client);
+
+// CatalogView.tsx
+let view = fs.readFileSync('components/CatalogView.tsx', 'utf8');
+
+const newView = `'use client';
 
 import { useEffect, useState, useCallback } from 'react';
 import { ApiClient } from '../lib/apiClient';
@@ -11,7 +28,9 @@ interface CatalogViewProps {
   icon: string;
 }
 
-const AVAILABLE_GENRES = ['Action', 'Romance', 'Comedy', 'Fantasy', 'Horror', 'Slice of Life', 'Succubus', 'Isekai', 'Harem', 'School Life'];
+const AVAILABLE_GENRES = [
+  'Action', 'Romance', 'Comedy', 'Fantasy', 'Horror', 'Slice of Life'
+];
 
 export function CatalogView({ title, category, icon }: CatalogViewProps) {
   const [results, setResults] = useState<FrontendManga[]>([]);
@@ -114,3 +133,6 @@ export function CatalogView({ title, category, icon }: CatalogViewProps) {
     </div>
   );
 }
+`;
+fs.writeFileSync('components/CatalogView.tsx', newView);
+console.log('Frontend pagination implemented');

@@ -14,11 +14,13 @@ export class ApiClient {
     return data.filter(m => m.language.includes('pt-BR'));
   }
 
-  static async discover(params: { category?: string, sort?: 'popular' | 'recent', limit?: number }): Promise<FrontendManga[]> {
+  static async discover(params: { category?: string, sort?: 'popular' | 'recent', limit?: number, page?: number, genre?: string }): Promise<FrontendManga[]> {
     const url = new URL(`${API_BASE}/manga/discover`, window.location.origin);
     if (params.category) url.searchParams.append('category', params.category);
     if (params.sort) url.searchParams.append('sort', params.sort);
     if (params.limit) url.searchParams.append('limit', params.limit.toString());
+    if (params.page) url.searchParams.append('page', params.page.toString());
+    if (params.genre) url.searchParams.append('genre', params.genre);
 
     const res = await fetch(url.toString());
     if (!res.ok) throw new Error('Failed to discover manga');

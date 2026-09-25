@@ -61,7 +61,7 @@ export class MangaDexProvider implements MangaProvider {
     };
   }
 
-  async search(query: string, options?: { category?: string, sort?: 'popular' | 'recent', limit?: number }): Promise<MangaMetadata[]> {
+  async search(query: string, options?: { category?: string, sort?: 'popular' | 'recent', limit?: number, page?: number, genre?: string }): Promise<MangaMetadata[]> {
     try {
       const orderConfig: any = {};
       if (options?.sort === 'recent') {
@@ -70,15 +70,36 @@ export class MangaDexProvider implements MangaProvider {
         orderConfig.followedCount = 'desc';
       }
 
+      
       const params: any = { 
         'availableTranslatedLanguage[]': ['pt-br'],
         'includes[]': ['cover_art'],
         hasAvailableChapters: 'true',
         order: orderConfig,
-        limit: options?.limit || 30
+        limit: options?.limit || 30,
+        offset: ((options?.page || 1) - 1) * (options?.limit || 30)
       };
 
-      if (query) {
+      if (options?.genre) {
+        // Genre to Tag mapping approximation
+        const genresMap: Record<string, string> = {
+          'action': '391b0423-d847-456f-aff0-8b0cfc03066b',
+          'romance': '423e2eae-a7a2-4a8b-ac03-a8351462d71d',
+          'comedy': '4d32cc48-9f00-4cca-9b5a-a839f0764984',
+          'fantasy': 'cdc58593-87dd-415e-bbc0-2ec27bf404cc',
+          'horror': 'cdad7e68-1419-41dd-bdce-27753074a640',
+          'slice of life': 'e5301a23-ebd9-49dd-a0cb-2add944c7fe9',
+          'succubus': '5bd0e105-4481-44ca-b6e7-7544da56b1a3', // Monster Girls / Succubus equivalent
+          'isekai': 'ace04997-f6bd-436e-b261-779182147d35', // Isekai
+          'harem': 'aafb99c1-7f60-43fa-bfce-801791b54c76', // Harem
+          'school life': 'caaa44eb-cd40-4177-b930-79d3ef2afe87' // School Life
+        };
+        const tag = genresMap[options.genre.toLowerCase()];
+        if (tag) {
+          params['includedTags[]'] = [tag];
+        }
+      }
+if (query) {
         params.title = query;
       }
 

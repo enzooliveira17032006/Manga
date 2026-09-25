@@ -15,8 +15,10 @@ router.get('/discover', async (req: Request, res: Response) => {
     const category = (req.query.category as string) || '';
     const sort = (req.query.sort as 'popular' | 'recent') || 'popular';
     const limit = parseInt(req.query.limit as string) || 15;
+    const page = parseInt(req.query.page as string) || 1;
+    const genre = req.query.genre as string;
 
-    const cacheKey = `${category}-${sort}-${limit}`;
+    const cacheKey = `${category}-${sort}-${limit}-${page}-${genre || 'all'}`;
     const cached = discoverCache.get(cacheKey);
     if (cached && Date.now() - cached.timestamp < DISCOVER_CACHE_TTL) {
       return res.json(cached.data);
@@ -25,7 +27,7 @@ router.get('/discover', async (req: Request, res: Response) => {
     // Use empty query to fetch from providers, but request more items
     // because many will be dropped if they lack PT-BR chapters.
     const poolLimit = limit * 2; 
-    const results = await syncService.searchAndSync('', { category, sort, limit: poolLimit });
+    const results = await syncService.searchAndSync('', { category, sort, limit: poolLimit, page, genre });
     
     // We limit the results after dedup and PT-BR filters
     const finalData = results.slice(0, limit);

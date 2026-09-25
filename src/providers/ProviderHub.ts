@@ -51,8 +51,8 @@ export class ProviderHub {
     return available;
   }
 
-  async search(query: string, options?: { category?: string, sort?: 'popular' | 'recent', limit?: number }): Promise<any[]> {
-    const cacheKey = `${query}-${options?.category || 'all'}-${options?.sort || 'popular'}-${options?.limit || 30}`;
+  async search(query: string, options?: { category?: string, sort?: 'popular' | 'recent', limit?: number, page?: number, genre?: string }): Promise<any[]> {
+    const cacheKey = `${query}-${options?.category || 'all'}-${options?.sort || 'popular'}-${options?.limit || 30}-${options?.page || 1}-${options?.genre || 'all'}`;
     if (this.searchCache.has(cacheKey)) {
       return this.searchCache.get(cacheKey)!;
     }

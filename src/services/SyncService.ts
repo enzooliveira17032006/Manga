@@ -8,7 +8,7 @@ const mangaRepo = new MangaRepository();
 const chapterRepo = new ChapterRepository();
 
 export class SyncService {
-  async searchAndSync(query: string, options?: { category?: string, sort?: 'popular' | 'recent', limit?: number }) {
+  async searchAndSync(query: string, options?: { category?: string, sort?: 'popular' | 'recent', limit?: number, page?: number, genre?: string }) {
     // 1. Search ProviderHub
     const results = await hub.search(query, options);
     
