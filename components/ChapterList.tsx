@@ -1,4 +1,5 @@
 import { FrontendChapter } from '../types';
+import Link from 'next/link';
 
 export function ChapterList({ chapters }: { chapters: FrontendChapter[] }) {
   if (chapters.length === 0) {
@@ -11,7 +12,11 @@ export function ChapterList({ chapters }: { chapters: FrontendChapter[] }) {
   return (
     <div className="flex flex-col gap-2 mt-6">
       {sorted.map(ch => (
-        <div key={ch.id} className="flex items-center justify-between bg-surface p-4 rounded-lg border border-neutral-800 hover:border-primary transition-colors cursor-pointer group">
+        <Link 
+          key={ch.id} 
+          href={`/read/${ch.id}`} 
+          className="flex items-center justify-between bg-surface p-4 rounded-lg border border-neutral-800 hover:border-primary transition-colors cursor-pointer group"
+        >
           <div className="flex items-center gap-4">
             <div className="bg-neutral-800 px-3 py-1 rounded text-sm font-bold text-primary group-hover:bg-primary group-hover:text-black transition-colors">
               Cap. {ch.number}
@@ -27,7 +32,7 @@ export function ChapterList({ chapters }: { chapters: FrontendChapter[] }) {
           <div className="text-sm font-bold text-primary opacity-0 group-hover:opacity-100 transition-opacity">
             Ler ➔
           </div>
-        </div>
+        </Link>
       ))}
     </div>
   );
