@@ -82,7 +82,9 @@ export class MangaRepository {
   }
 
   async searchMangaByTitle(title: string, options?: { category?: string }) {
-    const whereClause: any = {};
+    const whereClause: any = {
+      chapters: { some: {} }
+    };
     if (title) {
       whereClause.title = { contains: title, mode: 'insensitive' };
     }
