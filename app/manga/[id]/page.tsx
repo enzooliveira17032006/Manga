@@ -12,6 +12,16 @@ export default function MangaDetails() {
   const [chapters, setChapters] = useState<FrontendChapter[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [progress, setProgress] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const p = localStorage.getItem('progress_' + id);
+      if (p) {
+        setProgress(JSON.parse(p));
+      }
+    } catch (e) {}
+  }, [id]);
 
   useEffect(() => {
     async function load() {
@@ -61,6 +71,14 @@ export default function MangaDetails() {
               <span key={g} className="bg-neutral-800 border border-neutral-700 px-3 py-1 rounded-full text-sm text-neutral-300">{g}</span>
             ))}
           </div>
+
+          {progress && (
+            <div className="mb-6">
+              <a href={`/read/${progress.chapterId}`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg">
+                Continuar Leitura
+              </a>
+            </div>
+          )}
 
           <div className="text-sm text-neutral-400">
             <p><strong className="text-neutral-200">Autores:</strong> {manga.authors.join(', ') || 'N/A'}</p>

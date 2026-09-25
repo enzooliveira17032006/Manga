@@ -33,7 +33,7 @@ export default function ReadPage() {
         const allChapters = await ApiClient.getChapters(chapter.mangaId);
         
         // 4. Fetch Pages
-        const pages = await ApiClient.getPages(chapter.id, chapter.externalId, chapter.primaryProviderId, chapter.alternativeProviders);
+        const pages = await ApiClient.getPages(chapter.id);
 
         // Sort chapters numerically to find prev/next
         const sorted = [...allChapters].sort((a, b) => parseFloat(a.number) - parseFloat(b.number));

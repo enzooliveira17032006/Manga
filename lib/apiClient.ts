@@ -53,9 +53,8 @@ export class ApiClient {
     return data;
   }
 
-  static async getPages(chapterId: string, externalId: string, providerId: string, altProviders: string[] = []): Promise<FrontendPage[]> {
-    const alts = altProviders.join(',');
-    const url = `${API_BASE}/chapter/${chapterId}/pages?externalId=${externalId}&providerId=${providerId}&altProviders=${alts}`;
+  static async getPages(chapterId: string): Promise<FrontendPage[]> {
+    const url = `${API_BASE}/chapter/${chapterId}/pages`;
     const res = await fetch(url);
     if (!res.ok) throw new Error('Failed to fetch pages');
     return res.json();

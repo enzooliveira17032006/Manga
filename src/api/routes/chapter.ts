@@ -41,27 +41,33 @@ router.get('/:id', async (req: Request, res: Response) => {
 // GET /api/chapter/:id/pages
 router.get('/:id/pages', async (req: Request, res: Response) => {
   const id = req.params.id;
-  
-  // We need externalId and providerId.
-  const externalId = req.query.externalId as string;
-  const providerId = req.query.providerId as string;
-  const altProviders = (req.query.altProviders as string)?.split(',') || [];
-
-  if (!externalId || !providerId) {
-    return res.status(400).json({ error: 'externalId and providerId query parameters are required' });
-  }
 
   try {
-    const dbChapter = await prisma.chapter.findUnique({ where: { id } });
-    if (!dbChapter || dbChapter.language !== 'pt-BR') {
+    const dbChapter = await prisma.chapter.findUnique({
+      where: { id },
+      include: { providers: true }
+    });
+
+    if (!dbChapter) {
+      return res.status(404).json({ error: 'Chapter not found in database' });
+    }
+
+    if (dbChapter.language !== 'pt-BR') {
       return res.status(403).json({ error: 'Only PT-BR chapters are publicly available' });
     }
 
+    if (dbChapter.providers.length === 0) {
+      return res.status(404).json({ error: 'No providers associated with this chapter' });
+    }
+
+    // Use the primary provider stored in our DB
+    const primaryProvider = dbChapter.providers[0];
     const chapterPayload = {
-      id: externalId,
-      providerId: providerId,
-      alternativeProviders: altProviders
+      id: primaryProvider.externalId,
+      providerId: primaryProvider.providerId,
+      alternativeProviders: dbChapter.providers.slice(1).map(p => p.providerId)
     };
+
     const rawPages = await hub.getChapterPages(chapterPayload);
 
     if (!rawPages || rawPages.length === 0) {
@@ -70,8 +76,8 @@ router.get('/:id/pages', async (req: Request, res: Response) => {
 
     const domainPages: DomainPage[] = rawPages.map((url, index) => ({
       index,
-      url: `/api/proxy/image?url=${encodeURIComponent(url)}&provider=${providerId}`,
-      provider: providerId
+      url: `/api/proxy/image?url=${encodeURIComponent(url)}&provider=${primaryProvider.providerId}`,
+      provider: primaryProvider.providerId
     }));
 
     res.json(domainPages);

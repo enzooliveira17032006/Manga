@@ -78,6 +78,19 @@ export function Reader({ manga, chapter, pages, prevChapter, nextChapter }: Read
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [direction]);
 
+  // Progress Saving
+  useEffect(() => {
+    try {
+      localStorage.setItem(`progress_${manga.id}`, JSON.stringify({
+        chapterId: chapter.id,
+        page: currentPage,
+        timestamp: Date.now()
+      }));
+    } catch (e) {
+      console.error('Failed to save progress', e);
+    }
+  }, [currentPage, manga.id, chapter.id]);
+
   // Preload Logic (Preload +3 pages ahead of current)
   const isPreloadTarget = (index: number) => {
     return index < currentPage + 3;
