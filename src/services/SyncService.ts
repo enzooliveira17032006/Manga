@@ -14,26 +14,11 @@ export class SyncService {
     
     // 2. Evaluate Chapters and Sync to DB
     const syncedMangas = [];
-    const limit = pLimit(3); // Protect against rate limits
+    const limit = pLimit(5); // Increased concurrency
 
     const validationPromises = results.map(r => limit(async () => {
-      // Reconstruct the internal payload the Hub expects
-      const internalMangaPayload = {
-        externalLinks: r.externalLinks
-      };
-
-      // Fetch chapters from ProviderHub
-      const providerChapters = await hub.getChapters(internalMangaPayload);
-      
-      // Filter PT-BR explicitly
-      const ptBrChapters = providerChapters.filter(c => c.language === 'pt-BR');
-
-      // Se quantidade de capítulos PT-BR === 0 DESCARTAR OBRA
-      if (ptBrChapters.length === 0) {
-        return null; 
-      }
-
-      // Map to DomainManga structure
+      // We trust the provider's native language filtering (MangaDex enforces pt-br at the API level)
+      // This avoids fetching thousands of chapters during discover phase.
       const domainManga = {
         id: r.internal_manga_id,
         title: r.title,
@@ -42,7 +27,7 @@ export class SyncService {
         status: r.status,
         type: r.type,
         genres: r.genres,
-        language: ['pt-BR'], // Enforce absolute true
+        language: ['pt-BR'],
         authors: [r.author].filter(Boolean),
         artists: [r.artist].filter(Boolean),
         contentRating: r.contentRating || 'safe',
@@ -52,12 +37,6 @@ export class SyncService {
       } as any;
 
       const synced = await mangaRepo.upsertManga(domainManga);
-
-      // Persist the PT-BR chapters we just fetched to avoid duplicate fetching later
-      for (const ch of ptBrChapters) {
-        await chapterRepo.upsertChapter(synced.id, ch);
-      }
-
       return synced;
     }));
 
@@ -87,8 +66,9 @@ export class SyncService {
     // Fetch chapters from ProviderHub
     const chapters = await hub.getChapters(internalMangaPayload);
 
-    // Upsert to DB
-    for (const ch of chapters) {
+    // Filter PT-BR explicitly and Upsert to DB
+    const ptBrChapters = chapters.filter(c => c.language === 'pt-BR');
+    for (const ch of ptBrChapters) {
       await chapterRepo.upsertChapter(manga.id, ch);
     }
 

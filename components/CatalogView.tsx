@@ -6,6 +6,7 @@ import { MangaCard } from './MangaCard';
 import { FrontendManga } from '../types';
 
 interface CatalogViewProps {
+  defaultSort?: 'popular' | 'recent';
   title: string;
   category: string;
   icon: string;
@@ -13,20 +14,21 @@ interface CatalogViewProps {
 
 const AVAILABLE_GENRES = ['Action', 'Romance', 'Comedy', 'Fantasy', 'Horror', 'Slice of Life', 'Succubus', 'Isekai', 'Harem', 'School Life'];
 
-export function CatalogView({ title, category, icon }: CatalogViewProps) {
+export function CatalogView({ title, category, icon, defaultSort = 'popular' }: CatalogViewProps) {
   const [results, setResults] = useState<FrontendManga[]>([]);
   const [loading, setLoading] = useState(true);
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [genre, setGenre] = useState<string>('');
+  const [sort, setSort] = useState<'popular' | 'recent'>(defaultSort);
   const [hasMore, setHasMore] = useState(true);
 
-  const fetchCatalog = useCallback(async (pageNum: number, currentGenre: string, isLoadMore: boolean = false) => {
+  const fetchCatalog = useCallback(async (pageNum: number, currentGenre: string, currentSort: 'popular' | 'recent', isLoadMore: boolean = false) => {
     try {
       if (!isLoadMore) setLoading(true);
       else setLoadingMore(true);
 
-      const data = await ApiClient.discover({ category, limit: 30, page: pageNum, genre: currentGenre });
+      const data = await ApiClient.discover({ category, limit: 30, page: pageNum, genre: currentGenre, sort: currentSort });
       
       if (data.length < 30) {
         setHasMore(false);
@@ -50,13 +52,13 @@ export function CatalogView({ title, category, icon }: CatalogViewProps) {
   // Initial load or genre change
   useEffect(() => {
     setPage(1);
-    fetchCatalog(1, genre, false);
-  }, [genre, fetchCatalog]);
+    fetchCatalog(1, genre, sort, false);
+  }, [genre, sort, fetchCatalog]);
 
   const loadMore = () => {
     const nextPage = page + 1;
     setPage(nextPage);
-    fetchCatalog(nextPage, genre, true);
+    fetchCatalog(nextPage, genre, sort, true);
   };
 
   return (
@@ -66,19 +68,35 @@ export function CatalogView({ title, category, icon }: CatalogViewProps) {
           <span>{icon}</span> {title}
         </h1>
 
-        <div className="flex items-center gap-2">
-          <label className="text-sm text-textMuted">Filtrar por:</label>
-          <select 
-            className="bg-surface border border-neutral-800 rounded px-3 py-2 text-sm focus:border-primary outline-none"
-            value={genre}
-            onChange={(e) => setGenre(e.target.value)}
-          >
-            <option value="">Todos os Gêneros</option>
-            {AVAILABLE_GENRES.map(g => (
-              <option key={g} value={g}>{g}</option>
-            ))}
-          </select>
+        
+        <div className="flex items-center gap-4 flex-wrap">
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-textMuted">Ordenar:</label>
+            <select 
+              className="bg-surface border border-neutral-800 rounded px-3 py-2 text-sm focus:border-primary outline-none"
+              value={sort}
+              onChange={(e) => setSort(e.target.value as 'popular' | 'recent')}
+            >
+              <option value="popular">Mais Populares</option>
+              <option value="recent">Atualizados Recentemente</option>
+            </select>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <label className="text-sm text-textMuted">Gênero:</label>
+            <select 
+              className="bg-surface border border-neutral-800 rounded px-3 py-2 text-sm focus:border-primary outline-none"
+              value={genre}
+              onChange={(e) => setGenre(e.target.value)}
+            >
+              <option value="">Todos os Gêneros</option>
+              {AVAILABLE_GENRES.map(g => (
+                <option key={g} value={g}>{g}</option>
+              ))}
+            </select>
+          </div>
         </div>
+
       </div>
 
       {loading ? (
