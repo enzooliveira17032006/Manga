@@ -145,8 +145,9 @@ if (query) {
         params: {
           'translatedLanguage[]': langs,
           order: { chapter: 'asc' },
-          limit: 500
-        }
+          limit: 500,
+            'contentRating[]': ['safe', 'suggestive', 'erotica', 'pornographic']
+          }
       });
       return res.data.data.map((item: any) => ({
         id: item.id,
