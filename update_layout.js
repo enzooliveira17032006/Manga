@@ -1,4 +1,6 @@
-'use client';
+const fs = require('fs');
+
+const pageTsx = `'use client';
 
 import { useState, useEffect } from 'react';
 import { ApiClient } from '../lib/apiClient';
@@ -76,7 +78,7 @@ export default function Home() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (searchQuery.trim()) {
-      router.push(`/search?q=${encodeURIComponent(searchQuery.trim())}`);
+      router.push(\`/search?q=\${encodeURIComponent(searchQuery.trim())}\`);
     }
   };
 
@@ -168,3 +170,6 @@ export default function Home() {
     </div>
   );
 }
+`;
+
+fs.writeFileSync('app/page.tsx', pageTsx, 'utf8');
