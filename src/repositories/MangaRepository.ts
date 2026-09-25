@@ -37,36 +37,53 @@ export class MangaRepository {
         }
       });
     } else {
-      manga = await prisma.manga.create({
-        data: {
-          title: mangaData.title,
-          description: mangaData.description,
-          cover: mangaData.cover,
-          status: mangaData.status,
-          type: (mangaData as any).type,
-          contentRating: (mangaData as any).contentRating,
-          originalLanguage: (mangaData as any).originalLanguage,
-          genres: mangaData.genres,
-          language: mangaData.language,
-          authors: mangaData.authors,
-          artists: mangaData.artists
+      try {
+        manga = await prisma.manga.create({
+          data: {
+            title: mangaData.title,
+            description: mangaData.description,
+            cover: mangaData.cover,
+            status: mangaData.status,
+            type: (mangaData as any).type,
+            contentRating: (mangaData as any).contentRating,
+            originalLanguage: (mangaData as any).originalLanguage,
+            genres: mangaData.genres,
+            language: mangaData.language,
+            authors: mangaData.authors,
+            artists: mangaData.artists
+          }
+        });
+      } catch (e: any) {
+        if (e.code === 'P2002') {
+          // Find the one that was just created by another request
+          manga = await prisma.manga.findFirst({
+            where: { title: mangaData.title }
+          });
+        } else {
+          throw e;
         }
-      });
+      }
     }
+
+    if (!manga) return null;
 
     // Upsert MangaProviders
     for (const provider of mangaData.providers) {
       const externalId = (mangaData as any).externalLinks?.[provider];
       if (externalId) {
-        await prisma.mangaProvider.upsert({
-          where: { providerId_externalId: { providerId: provider, externalId: externalId } },
-          update: {},
-          create: {
-            mangaId: manga.id,
-            providerId: provider,
-            externalId: externalId
-          }
-        });
+        try {
+          await prisma.mangaProvider.upsert({
+            where: { providerId_externalId: { providerId: provider, externalId: externalId } },
+            update: {},
+            create: {
+              mangaId: manga.id,
+              providerId: provider,
+              externalId: externalId
+            }
+          });
+        } catch (e: any) {
+          if (e.code !== 'P2002') throw e;
+        }
       }
     }
 
