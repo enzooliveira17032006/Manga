@@ -45,7 +45,18 @@ export default function MangaDetails() {
   if (!manga) return null;
 
   return (
-    <div className="max-w-5xl mx-auto py-8">
+    <div className="max-w-5xl mx-auto py-4 sm:py-8 px-4 sm:px-0">
+      
+      {/* TOP NAVIGATION BREADCRUMB */}
+      <div className="flex gap-4 mb-6">
+        <button onClick={() => window.history.back()} className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors font-bold bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-full">
+          <span>←</span> Voltar
+        </button>
+        <a href="/" className="flex items-center gap-2 text-neutral-400 hover:text-white transition-colors font-bold bg-neutral-800 hover:bg-neutral-700 px-4 py-2 rounded-full">
+          <span>🏠</span> Início
+        </a>
+      </div>
+
       {/* HEADER SECTION */}
       <div className="flex flex-col md:flex-row gap-8 bg-surface p-6 rounded-2xl border border-neutral-800">
         <div className="w-full md:w-1/3 lg:w-1/4 shrink-0">

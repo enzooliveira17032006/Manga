@@ -24,13 +24,13 @@ export function ReaderControls({ show, mangaId, mangaTitle, chapterNumber, prevC
         <div className="max-w-5xl mx-auto flex items-center justify-between gap-2 sm:gap-4">
           
           <div className="flex items-center gap-2 sm:gap-4">
-            <Link href="/" className="flex items-center justify-center w-10 h-10 bg-neutral-800 hover:bg-neutral-700 rounded-full transition-colors text-neutral-300" title="Voltar ao início">
-              🏠
+            <Link href="/" className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-full transition-colors text-neutral-300 font-bold shadow-md">
+              <span className="text-lg">🏠</span> <span className="hidden sm:inline">Início</span>
             </Link>
-            <Link href={`/manga/${mangaId}`} className="flex items-center justify-center w-10 h-10 bg-neutral-800 hover:bg-neutral-700 rounded-full transition-colors text-neutral-300" title="Voltar à obra">
-              ←
+            <Link href={`/manga/${mangaId}`} className="flex items-center gap-2 px-3 sm:px-4 py-2 bg-neutral-800 hover:bg-neutral-700 rounded-full transition-colors text-neutral-300 font-bold shadow-md">
+              <span className="text-lg">←</span> <span className="hidden sm:inline">Página da Obra</span>
             </Link>
-            <div className="flex flex-col ml-2">
+            <div className="flex flex-col ml-2 border-l border-neutral-700 pl-4 hidden md:flex">
               <h1 className="font-bold text-sm sm:text-base line-clamp-1">{mangaTitle}</h1>
               <span className="text-xs text-primary font-bold">Capítulo {chapterNumber}</span>
             </div>
