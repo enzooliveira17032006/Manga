@@ -72,21 +72,21 @@ export default function MangaDetails() {
             ))}
           </div>
 
-          <div className="flex flex-wrap gap-4 mb-6">
+          <div className="flex flex-wrap items-center gap-3 mb-8 mt-4">
             {progress ? (
-              <a href={`/read/${progress.chapterId}`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg shadow-lg">
-                Continuar Leitura
+              <a href={`/read/${progress.chapterId}`} className="flex items-center gap-2 bg-primary hover:bg-primaryDark text-black font-extrabold py-3 px-8 rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,184,0,0.3)]">
+                <span className="text-xl">▶</span> Continuar Leitura
               </a>
             ) : (
               chapters.length > 0 && (
-                <a href={`/read/${chapters[chapters.length - 1].id}`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg shadow-lg">
-                  Começar a Assistir
+                <a href={`/read/${chapters[chapters.length - 1].id}`} className="flex items-center gap-2 bg-primary hover:bg-primaryDark text-black font-extrabold py-3 px-8 rounded-full transition-all hover:scale-105 active:scale-95 shadow-[0_0_20px_rgba(255,184,0,0.3)]">
+                  <span className="text-xl">▶</span> Começar a Assistir
                 </a>
               )
             )}
             
-            <button onClick={() => alert('As obras salvas serão implementadas em breve no seu perfil!')} className="inline-block bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 px-8 rounded-full transition-colors text-lg border border-neutral-700 shadow-lg">
-              ❤ Salvar
+            <button onClick={() => alert('As obras salvas serão implementadas em breve no seu perfil!')} className="flex items-center gap-2 bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 px-6 rounded-full transition-all hover:scale-105 active:scale-95 border border-neutral-700 shadow-lg">
+              <span className="text-red-500 text-xl">❤</span> Salvar Obra
             </button>
           </div>
 
