@@ -74,12 +74,12 @@ export default function MangaDetails() {
 
           <div className="flex flex-wrap gap-4 mb-6">
             {progress ? (
-              <a href={\`/read/\${progress.chapterId}\`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg shadow-lg">
+              <a href={`/read/${progress.chapterId}`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg shadow-lg">
                 Continuar Leitura
               </a>
             ) : (
               chapters.length > 0 && (
-                <a href={\`/read/\${chapters[chapters.length - 1].id}\`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg shadow-lg">
+                <a href={`/read/${chapters[chapters.length - 1].id}`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg shadow-lg">
                   Começar a Assistir
                 </a>
               )
