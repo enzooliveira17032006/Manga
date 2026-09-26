@@ -72,13 +72,23 @@ export default function MangaDetails() {
             ))}
           </div>
 
-          {progress && (
-            <div className="mb-6">
-              <a href={`/read/${progress.chapterId}`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg">
+          <div className="flex flex-wrap gap-4 mb-6">
+            {progress ? (
+              <a href={\`/read/\${progress.chapterId}\`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg shadow-lg">
                 Continuar Leitura
               </a>
-            </div>
-          )}
+            ) : (
+              chapters.length > 0 && (
+                <a href={\`/read/\${chapters[chapters.length - 1].id}\`} className="inline-block bg-primary hover:bg-primaryDark text-black font-bold py-3 px-8 rounded-full transition-colors text-lg shadow-lg">
+                  Começar a Assistir
+                </a>
+              )
+            )}
+            
+            <button onClick={() => alert('As obras salvas serão implementadas em breve no seu perfil!')} className="inline-block bg-neutral-800 hover:bg-neutral-700 text-white font-bold py-3 px-8 rounded-full transition-colors text-lg border border-neutral-700 shadow-lg">
+              ❤ Salvar
+            </button>
+          </div>
 
           <div className="text-sm text-neutral-400">
             <p><strong className="text-neutral-200">Autores:</strong> {manga.authors.join(', ') || 'N/A'}</p>
